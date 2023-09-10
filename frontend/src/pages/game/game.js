@@ -5,7 +5,8 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 
-import StopModal from '../../components/modals/stopModal';
+import WinModal from '../../components/modals/winModal';
+import FailModal from '../../components/modals/failModal';
 
 import { words } from '../../components/words';
 
@@ -13,10 +14,11 @@ import './game.css';
 
 export default function Game() {
     const [showModal, setShowModal] = useState(true);
-    const [wrong, setWrong] = useState(6);
-    const [time, setTime] = useState(100);
 
-    const [word, setWord] = useState(() => {
+    const [wrong, setWrong] = useState(5);
+    const [correct, setCorrect] = useState(0);
+
+    const [word] = useState(() => {
         const randomIndex = Math.floor(Math.random() * words.length);
         return words[randomIndex];
     });
@@ -33,10 +35,16 @@ export default function Game() {
     const character = "_";
     const times = word.length;
     const repeatedString = repeatCharacter(character, times);
-
     const [displayWord, setDisplayWord] = useState(repeatedString);
 
+    const alphabet1 = 'ABCDEFGHIJKLMN';
+    const alphabet2 = 'OPQRSTUVWXYZ';
+    const [activeLetters, setActiveLetters] = useState([]);
+
     function showLetter(characterToShow) {
+        if(!activeLetters.includes(characterToShow))
+            setActiveLetters([...activeLetters, characterToShow]);
+
         let verify = false;
         const updatedDisplayWord = [...displayWord];
     
@@ -46,7 +54,10 @@ export default function Game() {
                 verify = true;
             }
         
-        if(verify) setDisplayWord(updatedDisplayWord.join(''));
+        if(verify){
+            setDisplayWord(updatedDisplayWord.join(''));
+            setCorrect(correct + 1);
+        }
         else if(!verify) {
             setWrong(wrong - 1);
             if(wrong - 1 === 0)
@@ -54,6 +65,7 @@ export default function Game() {
         }
     }
     
+    const [time, setTime] = useState(150);
     useEffect(() => {
         const timerId = setInterval(countdown, 1000);
 
@@ -68,9 +80,6 @@ export default function Game() {
             clearInterval(timerId);
         };
     }, [time]);
-
-    const alphabet1 = 'ABCDEFGHIJKLMN';
-    const alphabet2 = 'OPQRSTUVWXYZ';
 
     return (
         <Container fluid>
@@ -93,6 +102,7 @@ export default function Game() {
                                         key={letter}
                                         variant="secondary"
                                         onClick={() => showLetter(letter)}
+                                        disabled={activeLetters.includes(letter)}
                                     >
                                         {letter}
                                     </Button>{' '}
@@ -106,6 +116,7 @@ export default function Game() {
                                         key={letter}
                                         variant="secondary"
                                         onClick={() => showLetter(letter)}
+                                        disabled={activeLetters.includes(letter)}
                                     >
                                         {letter}
                                     </Button>{' '}
@@ -115,7 +126,8 @@ export default function Game() {
                     </Col>
                 </Row>
             )}
-            {(wrong === 0 || time === 0) && <StopModal />}
+            {(correct === word.length) && <WinModal/>}
+            {(wrong === 0 || time === 0) && <FailModal/>}
         </Container>
     );
 }
