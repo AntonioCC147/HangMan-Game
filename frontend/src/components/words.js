@@ -1,5 +1,5 @@
 let words = [
-    "ABC", "DEFGH", "BIA"
+    "CEVA"
 ];
 
 export { words };

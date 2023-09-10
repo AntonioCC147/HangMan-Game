@@ -10,6 +10,8 @@ import FailModal from '../../components/modals/failModal';
 
 import { words } from '../../components/words';
 
+import heart from '../../assets/icons/heart.png';
+
 import './game.css';
 
 export default function Game() {
@@ -27,7 +29,10 @@ export default function Game() {
         let result = '';
 
         for(let i = 0; i < times; i++)
-            result += character + " ";
+            if(word[i] !== '-')
+                result += character + " ";
+            else
+                result += "- ";
 
         return result;
     }
@@ -57,6 +62,8 @@ export default function Game() {
         if(verify){
             setDisplayWord(updatedDisplayWord.join(''));
             setCorrect(correct + 1);
+            if(correct + 1 === word.length)
+                setShowModal(false);
         }
         else if(!verify) {
             setWrong(wrong - 1);
@@ -85,45 +92,57 @@ export default function Game() {
         <Container fluid>
             {showModal && (
                 <Row>
-                    <Col sm={4} className="text-center">
-                        Ceva
-                    </Col>
-                    <Col sm={8}>
+                    <p className="title">HangMan Game</p>
+                    <Row className="right">
+                        {(() => {
+                            const hearts = [];
+                            for(let i = 0; i < wrong; i++)
+                                hearts.push(<img key={i} src={heart} className="heart" alt="Heart" />);
+                            return hearts;
+                        })()}
+                        <p className="right time">Time left: {time} seconds</p>
+                    </Row>
+                    <Row>
+                        <Col sm={4} className="text-center">
+                            Ceva
+                        </Col>
+                        <Col sm={8}>
                         <Col sm={12} className="text-center">
-                            <h1>{displayWord}</h1>
-                            Wrong: {wrong}<br/>
-                            Time: {time}
+                            <p className="displayWord">{displayWord}</p>
                         </Col>
                         <Col sm={12} className="text-center">
-                            {alphabet1.split('').map(letter => (
-                                <>
-                                    <Button
-                                        size="lg"
-                                        key={letter}
-                                        variant="secondary"
-                                        onClick={() => showLetter(letter)}
-                                        disabled={activeLetters.includes(letter)}
-                                    >
-                                        {letter}
-                                    </Button>{' '}
-                                </>
-                            ))}
-                            <br/><br/>
-                            {alphabet2.split('').map(letter => (
-                                <>
-                                    <Button
-                                        size="lg"
-                                        key={letter}
-                                        variant="secondary"
-                                        onClick={() => showLetter(letter)}
-                                        disabled={activeLetters.includes(letter)}
-                                    >
-                                        {letter}
-                                    </Button>{' '}
-                                </>
-                            ))}
+                            <div>
+                                {alphabet1.split('').map(letter => (
+                                    <>
+                                        <Button
+                                            size="lg"
+                                            key={letter}
+                                            variant="secondary"
+                                            onClick={() => showLetter(letter)}
+                                            disabled={activeLetters.includes(letter)}
+                                        >
+                                            {letter}
+                                        </Button>{' '}
+                                    </>
+                                ))}
+                                <br /><br />
+                                {alphabet2.split('').map(letter => (
+                                    <>
+                                        <Button
+                                            size="lg"
+                                            key={letter}
+                                            variant="secondary"
+                                            onClick={() => showLetter(letter)}
+                                            disabled={activeLetters.includes(letter)}
+                                        >
+                                            {letter}
+                                        </Button>{' '}
+                                    </>
+                                ))}
+                            </div> {/* Close the container here */}
                         </Col>
-                    </Col>
+                        </Col>
+                    </Row>
                 </Row>
             )}
             {(correct === word.length) && <WinModal/>}
