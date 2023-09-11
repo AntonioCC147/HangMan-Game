@@ -94,7 +94,7 @@ export default function Game() {
     }, [time]);
 
     return (
-        <Container fluid>
+        <Container fluid className="background">
             {showModal && (
                 <Row>
                     <p className="title">HangMan Game</p>
@@ -116,10 +116,10 @@ export default function Game() {
                             {wrong === 1 && ( <img src={gallows5} alt="Gallows5"/> )}
                         </Col>
                         <Col sm={8}>
-                            <Col sm={12} className="text-center">
+                            <Row className="text-center">
                                 <p className="displayWord">{displayWord}</p>
-                            </Col>
-                            <Col sm={12} className="text-center">
+                            </Row>
+                            <Row className="text-center">
                                 <div>
                                     {alphabet1.split('').map(letter => (
                                         <>
@@ -149,7 +149,7 @@ export default function Game() {
                                         </>
                                     ))}
                                 </div>
-                            </Col>
+                            </Row>
                         </Col>
                     </Row>
                 </Row>
