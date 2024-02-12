@@ -77,7 +77,7 @@ export default function Game() {
         }
     }
     
-    const [time, setTime] = useState(300);
+    const [time, setTime] = useState(150);
     useEffect(() => {
         const timerId = setInterval(countdown, 1000);
 
